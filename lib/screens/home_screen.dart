@@ -1,3 +1,4 @@
+import 'package:contact/componants/add_contact.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -42,6 +43,22 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xffFFF1D4),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+            ),
+            builder: (context) => const AddContact(),
+          );
+        },
+
+        child: const Icon(Icons.add),
       ),
     );
   }

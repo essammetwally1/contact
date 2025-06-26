@@ -13,9 +13,17 @@ class _ContactFormState extends State<ContactForm> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
   void submit() {
     if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Close the bottom sheet
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Contact Saved')));
@@ -46,76 +54,164 @@ class _ContactFormState extends State<ContactForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 16,
+        right: 16,
+        top: 24,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            // Profile preview section
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: Colors.white),
+                  ),
+                  child: Image.asset(
+                    'assets/image.png',
+                    height: 146,
+                    width: 143,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _nameController.text.isEmpty
+                              ? 'User Name'
+                              : _nameController.text,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xffFFF1D4),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(height: 1, color: Color(0xffFFF1D4)),
+                        const SizedBox(height: 8),
+                        Text(
+                          _emailController.text.isEmpty
+                              ? 'example@email.com'
+                              : _emailController.text,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xffFFF1D4),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(height: 1, color: Color(0xffFFF1D4)),
+                        const SizedBox(height: 8),
+                        Text(
+                          _phoneController.text.isEmpty
+                              ? '+20000000000'
+                              : _phoneController.text,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xffFFF1D4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
 
-          // Name Field
-          TextFormField(
-            cursorColor: Colors.white,
-            controller: _nameController,
-            style: const TextStyle(color: Colors.white),
-            decoration: customInputDecoration('Enter User Name'),
-            validator: (value) =>
-                value == null || value.isEmpty ? 'Enter a name' : null,
-          ),
+            const SizedBox(height: 24),
 
-          const SizedBox(height: 16),
+            // Name Field
+            TextFormField(
+              cursorColor: Colors.white,
+              controller: _nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: customInputDecoration('Enter User Name'),
+              validator: (value) =>
+                  value == null || value.isEmpty ? 'Enter a name' : null,
+              onChanged: (_) => setState(() {}),
+            ),
 
-          // Email Field
-          TextFormField(
-            cursorColor: Colors.white,
+            const SizedBox(height: 16),
 
-            controller: _emailController,
-            style: const TextStyle(color: Colors.white),
-            decoration: customInputDecoration('Enter User Email'),
-            keyboardType: TextInputType.emailAddress,
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Enter an email';
-              if (!value.endsWith('@gmail.com'))
-                return 'Email must end with @gmail.com';
-              return null;
-            },
-          ),
+            // Email Field
+            TextFormField(
+              cursorColor: Colors.white,
+              controller: _emailController,
+              style: const TextStyle(color: Colors.white),
+              decoration: customInputDecoration('Enter User Email'),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Enter an email';
+                if (!value.endsWith('@gmail.com')) {
+                  return 'Email must end with @gmail.com';
+                }
+                return null;
+              },
+              onChanged: (_) => setState(() {}),
+            ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          // Phone Field
-          TextFormField(
-            cursorColor: Colors.white,
+            // Phone Field
+            TextFormField(
+              cursorColor: Colors.white,
+              controller: _phoneController,
+              style: const TextStyle(color: Colors.white),
+              decoration: customInputDecoration('Enter User Phone'),
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Enter a phone number';
+                }
+                if (!value.startsWith('01')) {
+                  return 'Phone must start with 01';
+                }
+                return null;
+              },
+              onChanged: (_) => setState(() {}),
+            ),
 
-            controller: _phoneController,
-            style: const TextStyle(color: Colors.white),
-            decoration: customInputDecoration('Enter User Phone'),
-            keyboardType: TextInputType.phone,
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Enter a phone number';
-              if (!value.startsWith('01')) return 'Phone must start with (01)';
-              return null;
-            },
-          ),
+            const SizedBox(height: 24),
 
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: submit,
-            child: Container(
-              width: double.infinity,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Color(0xffFFF1D4),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: const Text(
-                  'Enter User',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            // Submit Button
+            GestureDetector(
+              onTap: submit,
+              child: Container(
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: const Color(0xffFFF1D4),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Enter User',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }

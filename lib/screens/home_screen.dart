@@ -22,11 +22,9 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18, top: 8),
-                    child: Image.asset('assets/homeimage.png'),
-                  ),
+                  Image.asset('assets/homeimage.png', width: double.infinity),
                   SizedBox(
                     height: MediaQuery.sizeOf(context).height * .1,
                     child: Text(

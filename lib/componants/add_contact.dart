@@ -25,15 +25,7 @@ class AddContact extends StatelessWidget {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/addcontactgroup.png',
-                height: MediaQuery.sizeOf(context).height * .2,
-                width: double.infinity,
-                fit: BoxFit.contain,
-              ),
-              ContactForm(),
-            ],
+            children: [ContactForm()],
           ),
         ),
       ),

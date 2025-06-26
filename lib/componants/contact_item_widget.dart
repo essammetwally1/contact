@@ -28,7 +28,9 @@ class ContactItemWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(contactModel.pickedImage),
+                      image: contactModel.pickedImage != null
+                          ? FileImage(contactModel.pickedImage!)
+                          : AssetImage('assets/image.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -82,6 +84,21 @@ class ContactItemWidget extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Color(0xffFFF1D4),
+                            content: Center(
+                              child: Text(
+                                'Contact Deleted',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xff29384D),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+
                         onDelete(index);
                       },
                       style: ElevatedButton.styleFrom(

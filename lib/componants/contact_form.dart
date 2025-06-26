@@ -41,7 +41,7 @@ class _ContactFormState extends State<ContactForm> {
     if (_formKey.currentState!.validate()) {
       widget.addContact(
         ContactModel(
-          pickedImage: _pickedImage as File,
+          _pickedImage,
           phone: _phoneController.text,
           name: _nameController.text,
           email: _emailController.text,
@@ -104,19 +104,33 @@ class _ContactFormState extends State<ContactForm> {
               children: [
                 GestureDetector(
                   onTap: _pickImage,
-                  child: Container(
-                    height: 146,
-                    width: 143,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(color: Colors.white),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
-                      child: _pickedImage != null
-                          ? Image.file(_pickedImage!, fit: BoxFit.fill)
-                          : Image.asset('assets/image.png', fit: BoxFit.cover),
-                    ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 146,
+                        width: 143,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(28),
+                          child: _pickedImage != null
+                              ? Image.file(_pickedImage!, fit: BoxFit.fill)
+                              : Image.asset(
+                                  'assets/image.png',
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.add_a_photo,
+                          color: Color(0xffFFF1D4),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),

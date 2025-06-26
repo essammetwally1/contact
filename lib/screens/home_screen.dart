@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<ContactModel> contactsList = [];
+  List<ContactModel> contactsList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -21,76 +21,147 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xff29384D),
 
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 18, top: 8),
-              child: Image.asset('assets/route.png', height: 39, width: 117),
-            ),
-            contactsList.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, top: 8),
+                  child: Image.asset(
+                    'assets/route.png',
+                    height: 39,
+                    width: 117,
+                  ),
+                ),
+                contactsList.isEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
 
-                    children: [
-                      Image.asset(
-                        'assets/homeimage.png',
-                        width: double.infinity,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.sizeOf(context).height * .1,
-                        child: Text(
-                          'There is No Contacts Added Here',
-                          style: TextStyle(
-                            color: Color(0xffFFF1D4),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
+                        children: [
+                          Image.asset(
+                            'assets/homeimage.png',
+                            width: double.infinity,
+                          ),
+                          SizedBox(
+                            height: MediaQuery.sizeOf(context).height * .1,
+                            child: Text(
+                              'There is No Contacts Added Here',
+                              style: TextStyle(
+                                color: Color(0xffFFF1D4),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: GridView.builder(
+                            itemCount: contactsList.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2, // 2 items per row
+                                  crossAxisSpacing: 12, // space between columns
+                                  mainAxisSpacing: 12, // space between rows
+                                  childAspectRatio: 2 / 3.5,
+                                ),
+                            itemBuilder: (context, index) {
+                              return ContactItemWidget(
+                                onDelete: onDelete,
+                                index: index,
+                                contactModel: contactsList[index],
+                              );
+                            },
                           ),
                         ),
                       ),
-                    ],
-                  )
-                : Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: GridView.builder(
-                        itemCount: contactsList.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, // 2 items per row
-                              crossAxisSpacing: 12, // space between columns
-                              mainAxisSpacing: 12, // space between rows
-                              childAspectRatio: 2 / 3.5,
+              ],
+            ),
+
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20, bottom: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 60, // or any fixed width you prefer
+                      height: MediaQuery.sizeOf(context).height * 0.07,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () {
+                          contactsList.clear();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Color(0xffFFF1D4),
+                              content: Center(
+                                child: Text(
+                                  'All Contacts Deleted',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xff29384D),
+                                  ),
+                                ),
+                              ),
                             ),
-                        itemBuilder: (context, index) {
-                          return ContactItemWidget(
-                            onDelete: onDelete,
-                            index: index,
-                            contactModel: contactsList[index],
                           );
+
+                          setState(() {});
                         },
+                        child: Center(
+                          child: Image.asset(
+                            'assets/delete.png',
+                            color: Colors.white,
+                            scale: .5,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 60,
+                      height: MediaQuery.sizeOf(context).height * 0.07,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xffFFF1D4),
+                          foregroundColor: const Color(0xff29384D),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(40),
+                              ),
+                            ),
+                            builder: (context) =>
+                                AddContact(addContact: addContact),
+                          );
+                        },
+                        child: const Center(child: Icon(Icons.add)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        foregroundColor: Color(0xff29384D),
-        backgroundColor: Color(0xffFFF1D4),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-            ),
-            builder: (context) => AddContact(addContact: addContact),
-          );
-        },
-
-        child: const Icon(Icons.add),
       ),
     );
   }

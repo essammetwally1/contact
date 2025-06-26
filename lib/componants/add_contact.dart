@@ -1,8 +1,10 @@
 import 'package:contact/componants/contact_form.dart';
+import 'package:contact/models/contact_model.dart';
 import 'package:flutter/material.dart';
 
 class AddContact extends StatelessWidget {
-  const AddContact({super.key});
+  final void Function(ContactModel) addContact;
+  const AddContact({super.key, required this.addContact});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class AddContact extends StatelessWidget {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [ContactForm()],
+            children: [ContactForm(addContact: addContact)],
           ),
         ),
       ),

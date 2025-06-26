@@ -1,10 +1,12 @@
 import 'dart:io';
-
+import 'package:contact/models/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ContactForm extends StatefulWidget {
-  const ContactForm({super.key});
+  final void Function(ContactModel) addContact;
+
+  const ContactForm({super.key, required this.addContact});
 
   @override
   State<ContactForm> createState() => _ContactFormState();
@@ -37,10 +39,26 @@ class _ContactFormState extends State<ContactForm> {
 
   void submit() {
     if (_formKey.currentState!.validate()) {
+      widget.addContact(
+        ContactModel(
+          pickedImage: _pickedImage as File,
+          phone: _phoneController.text,
+          name: _nameController.text,
+          email: _emailController.text,
+        ),
+      );
       Navigator.of(context).pop(); // Close the bottom sheet
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Contact Saved')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Color(0xffFFF1D4),
+          content: Center(
+            child: Text(
+              'Contact Saved',
+              style: TextStyle(fontSize: 20, color: Color(0xff29384D)),
+            ),
+          ),
+        ),
+      );
     }
   }
 

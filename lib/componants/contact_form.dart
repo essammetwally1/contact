@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ContactForm extends StatefulWidget {
   const ContactForm({super.key});
@@ -12,6 +15,17 @@ class _ContactFormState extends State<ContactForm> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
+  File? _pickedImage;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedImage = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -67,19 +81,24 @@ class _ContactFormState extends State<ContactForm> {
           children: [
             // Profile preview section
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+
               children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: Image.asset(
-                    'assets/image.png',
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
                     height: 146,
                     width: 143,
-                    fit: BoxFit.contain,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(color: Colors.white),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: _pickedImage != null
+                          ? Image.file(_pickedImage!, fit: BoxFit.fill)
+                          : Image.asset('assets/image.png', fit: BoxFit.cover),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -87,6 +106,7 @@ class _ContactFormState extends State<ContactForm> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
